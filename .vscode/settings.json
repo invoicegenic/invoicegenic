@@ -1,0 +1,6 @@
+{
+    "files.exclude": {
+        "design[s]": true,
+        "legacy.bak": true
+    }
+}
