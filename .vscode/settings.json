@@ -2,5 +2,9 @@
     "files.exclude": {
         "design[s]": true,
         "legacy.bak": true
-    }
+    },
+    "python.formatting.autopep8Path": "${workspaceFolder}/api/venv/bin/autopep8",
+    "python.venvPath": "${workspaceFolder}/api/venv",
+    "python.linting.pylintPath": "${workspaceFolder}/api/venv/bin/pylint",
+    "editor.tabSize": 2
 }
