@@ -1,10 +1,20 @@
 {
     "files.exclude": {
+        "**/__pycache__": true,
         "design[s]": true,
         "legacy.bak": true
     },
     "python.formatting.autopep8Path": "${workspaceFolder}/api/venv/bin/autopep8",
     "python.venvPath": "${workspaceFolder}/api/venv",
     "python.linting.pylintPath": "${workspaceFolder}/api/venv/bin/pylint",
-    "editor.tabSize": 2
+    "python.linting.pylintArgs": [
+        "--load-plugins",
+        "pylint_flask_sqlalchemy",
+        "pylint_flask",
+    ],
+    "editor.tabSize": 2,
+    "[python]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4
+    },
 }

@@ -1,3 +1,4 @@
+'''API V0 routes'''
 from api.v0 import bp
 
 

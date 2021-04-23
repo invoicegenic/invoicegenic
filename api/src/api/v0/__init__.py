@@ -1,3 +1,4 @@
+'''API V0 module'''
 from flask import Blueprint
 
 bp = Blueprint('api_v0', __name__)
