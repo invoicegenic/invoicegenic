@@ -1,6 +1,6 @@
-'''API V0 module'''
-from flask import Blueprint
+'''
+API V0 module
+'''
+from . import routes
 
-bp = Blueprint('api_v0', __name__)
-
-from api.v0 import routes
+api_v0_bp = routes.bp
