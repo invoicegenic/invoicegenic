@@ -1,8 +1,9 @@
 '''App models'''
-from models import db
 from uuid import uuid4
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash
+
+from models import db
 
 
 class User(db.Model):
@@ -40,9 +41,9 @@ class User(db.Model):
 
     def from_dict(self, data, new_user=False):
         fields = ['email']
-        for field, value in fields:
+        for _, field in enumerate(fields):
             if field in data:
-                setattr(self, field, value)
+                setattr(self, field, data[field])
 
         if new_user and 'password' in data:
             self.__make_id()

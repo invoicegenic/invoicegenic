@@ -1,13 +1,14 @@
 '''
 Users service
 '''
-from models import User
-from flask import jsonify
-from api.errors import not_found
+from flask import request, jsonify, url_for
+
+from models import db, User
+from api.errors import not_found, bad_request
 
 
-def get_user(id: str):
-    user = User.query.get(id)
+def get_user(_id: str):
+    user = User.query.get(_id)
     if user is None:
         return not_found('User is not found')
 
@@ -15,12 +16,30 @@ def get_user(id: str):
 
 
 def create_user():
+    payload = request.get_json() or {}
+
+    if 'email' not in payload or 'password' not in payload:
+        return bad_request('Either email or password is missing from the request data')
+
+    user_exists = User.query.filter_by(email=payload['email']).first()
+    if user_exists is not None:
+        return bad_request('User with the same email is already registered')
+
+    user = User()
+    user.from_dict(payload, new_user=True)
+    db.session.add(user)
+    db.session.commit()
+
+    response = jsonify(user.to_dict())
+    response.status_code = 201
+    response.headers['Location'] = url_for('.get_user', id=user.id)
+
+    return response
+
+
+def update_user(_id: str):
     pass
 
 
-def update_user(id):
-    pass
-
-
-def delete_user(id):
+def delete_user(_id: str):
     pass

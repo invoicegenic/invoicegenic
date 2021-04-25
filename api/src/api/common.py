@@ -1,6 +1,6 @@
 '''
 '''
-from flask import current_app, jsonify
+# from flask import current_app, jsonify
 
 
 def index(version: str = 'v0'):

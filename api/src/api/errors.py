@@ -3,7 +3,7 @@ Errors module
 '''
 from flask import jsonify
 from werkzeug.http import HTTP_STATUS_CODES
-from werkzeug.exceptions import HTTPException
+# from werkzeug.exceptions import HTTPException
 
 
 def error_response(status_code, message=None):
@@ -35,5 +35,5 @@ def gone(message):
 # def server_error(message):
 #     return error_response(500, message)
 
-def server_error(error):
+def server_error(_):
     return error_response(500, 'Failed to retrieving data due to server error')

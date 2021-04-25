@@ -1,9 +1,10 @@
 '''
 API V0 routes
 '''
-from .services import users
 from flask import Blueprint
+
 from api import common as common_services
+from .services import users
 
 
 bp = Blueprint('api_v0', __name__)
@@ -12,14 +13,18 @@ bp = Blueprint('api_v0', __name__)
 # -----------------------------------------------------------------------------
 # Users routes
 # -----------------------------------------------------------------------------
-@bp.route('/users/<string:id>', methods=['GET'])
-def get_user(id):
-    return users.get_user(id)
+@bp.route('/users/<string:_id>', methods=['GET'])
+def get_user(_id: str):
+    return users.get_user(_id)
 
 
 @bp.route('/users', methods=['POST'])
-@bp.route('/users/<string:id>', methods=['PUT'])
-@bp.route('/users/<string:id>', methods=['DELETE'])
+def create_user():
+    return users.create_user()
+
+
+@bp.route('/users/<string:_id>', methods=['PUT'])
+@bp.route('/users/<string:_id>', methods=['DELETE'])
 def test():
     pass
 
