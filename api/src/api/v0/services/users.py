@@ -11,6 +11,8 @@ def get_user(_id: str):
     user = User.query.get(_id)
     if user is None:
         return not_found('User is not found')
+    if user.deleted_at is not None:
+        return bad_request('User is already deleted')
 
     return jsonify(user.to_dict())
 
@@ -32,14 +34,35 @@ def create_user():
 
     response = jsonify(user.to_dict())
     response.status_code = 201
-    response.headers['Location'] = url_for('.get_user', id=user.id)
+    response.headers['Location'] = url_for('.get_user', _id=user.id)
 
     return response
 
 
 def update_user(_id: str):
-    pass
+    user = User.query.get(_id)
+    if user is None:
+        return not_found('User is not found')
+
+    payload = request.get_json() or {}
+    user.from_dict(payload)
+    db.session.commit()
+
+    response = jsonify(user.to_dict())
+    response.headers['Location'] = url_for('.get_user', _id=user.id)
+
+    return response
 
 
 def delete_user(_id: str):
-    pass
+    user = User.query.get(_id)
+    if user is None:
+        return not_found('User is not found')
+
+    user.soft_delete()
+    db.session.commit()
+
+    response = jsonify(None)
+    response.status_code = 204
+
+    return response

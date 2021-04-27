@@ -1,8 +1,9 @@
 '''
 '''
-from extensions import db
+from extensions import db as _db
 
-db = db
+db = _db
+
 
 from . import user
 

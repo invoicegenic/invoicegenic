@@ -4,47 +4,57 @@ from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash
 
 from models import db
+from .mixins.use_uuid_pk import UseUuidAsPK
+from .mixins.created_time import CreatedTimeMixin
+from .mixins.updated_time import UpdatedTimeMixin
+from .mixins.soft_delete import SoftDeleteMixin
 
 
-class User(db.Model):
+class Mixins(CreatedTimeMixin, UpdatedTimeMixin, SoftDeleteMixin):
+    pass
+
+
+class User(UseUuidAsPK, Mixins, db.Model):
     '''User model class'''
-    id = db.Column(db.String(40), primary_key=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-    created_at = db.Column(db.DateTime, default=datetime.now(tz=timezone.utc))
-    updated_at = db.Column(db.DateTime, default=datetime.now(tz=timezone.utc))
-    deleted_at = db.Column(db.DateTime, nullable=True)
+    email = db.Column(db.String(120), nullable=False, index=True, unique=True)
+
+    password = db.Column(db.String(128), nullable=False)
+
+    editable = ['email', 'password']
 
     def __repr__(self):
         return f'<User {self.email}>'
 
-    def __make_id(self):
-        self.id = str(uuid4())
-
     def __make_pw_hash(self, password):
         method = 'pbkdf2:sha256:120282'
         salt_length = 32
-        self.password_hash = \
-            generate_password_hash(password, method, salt_length)
+        return generate_password_hash(password, method, salt_length)
 
     def __check_pw_hash(self, password):
         pass
+
+    def to_utc_iso(self, utc_datetime: datetime) -> str:
+        return utc_datetime.isoformat() + 'Z'
 
     def to_dict(self):
         payload = {
             'id': self.id,
             'email': self.email,
-            'created_at': self.created_at.isoformat() + 'Z',
-            'updated_at': self.updated_at.isoformat() + 'Z',
+            'created_at': self.to_utc_iso(self.created_at),
+            'updated_at': self.to_utc_iso(self.updated_at)
         }
         return payload
 
     def from_dict(self, data, new_user=False):
-        fields = ['email']
-        for _, field in enumerate(fields):
-            if field in data:
-                setattr(self, field, data[field])
+        if new_user:
+            super().make_uuid()
 
-        if new_user and 'password' in data:
-            self.__make_id()
-            self.__make_pw_hash(password=data['password'])
+        for _, field in enumerate(self.editable):
+            if field not in data:
+                continue
+
+            if field == 'password':
+                pw_hash = self.__make_pw_hash(data['password'])
+                setattr(self, 'password', pw_hash)
+            else:
+                setattr(self, field, data[field])
