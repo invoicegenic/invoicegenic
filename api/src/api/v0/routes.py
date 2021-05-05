@@ -1,10 +1,10 @@
 '''
 API V0 routes
 '''
-from flask import Blueprint
+from flask import Blueprint, abort
 
 from api import common as common_services
-from .services import users
+from .services import users, auth as auth_svc
 
 
 bp = Blueprint('api_v0', __name__)
@@ -31,6 +31,19 @@ def update_user(_id: str):
 @bp.route('/users/<string:_id>', methods=['DELETE'])
 def delete_user(_id: str):
     return users.delete_user(_id)
+
+
+# -----------------------------------------------------------------------------
+# Auth routes
+# -----------------------------------------------------------------------------
+@bp.route('/auth/<string:auth_type>', methods=['POST'])
+def auth(auth_type: str):
+    if auth_type == 'login':
+        return auth_svc.login()
+    elif auth_type == 'logout':
+        return auth_svc.logout()
+    else:
+        abort(404)
 
 
 # -----------------------------------------------------------------------------

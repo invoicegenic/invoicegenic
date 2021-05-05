@@ -32,6 +32,10 @@ def gone(message):
     return error_response(410, message)
 
 
+def unauthorized(message):
+    return error_response(401, message)
+
+
 # def server_error(message):
 #     return error_response(500, message)
 
