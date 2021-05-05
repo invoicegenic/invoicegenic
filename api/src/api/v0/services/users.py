@@ -12,7 +12,7 @@ def get_user(_id: str):
     if user is None:
         return not_found('User is not found')
     if user.deleted_at is not None:
-        return bad_request('User is already deleted')
+        return jsonify(None), 204
 
     return jsonify(user.to_dict())
 
