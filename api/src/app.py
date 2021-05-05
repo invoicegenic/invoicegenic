@@ -14,6 +14,7 @@ from dotenv import dotenv_values
 import extensions
 from api.v0 import api_v0_bp
 from settings.db import db_setting
+from settings.shared import shared_setting
 
 
 def create_app(use_test_env: bool = False) -> Flask:
@@ -49,7 +50,10 @@ def configure_app(env: str, run_as_test: bool) -> dict:
         pathlib.Path().absolute().joinpath(f'.env.{env}')
     ))
 
-    settings = dict(**db_setting(env_vars))
+    settings = dict(
+        **db_setting(env_vars),
+        **shared_setting(env_vars)
+    )
     if run_as_test:
         settings['TESTING'] = True
 

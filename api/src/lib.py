@@ -13,3 +13,7 @@ def to_utc_iso(dt: datetime) -> str:
 
 def to_mysql_datetime_string(dt: datetime) -> str:
     return dt.strftime('%Y-%m-%d %H:%M:%S')
+
+
+def to_timestamp(dt: datetime) -> int:
+    return int(datetime.timestamp(dt))
